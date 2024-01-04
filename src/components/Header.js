@@ -66,28 +66,6 @@ const Header = () => {
           </Link>
         )}
 
-        {section !== "/new-post" && loggedIn && (
-          <Button
-            size="small"
-            color="blue"
-            onClick={() => {
-              setSection("/new-post");
-              navigate("/new-post");
-            }}
-          >
-            Create a Post
-          </Button>
-          // <Link
-          //   className="header__link header__link--new-post"
-          //   to="/new-post"
-          //   onClick={() => {
-          //     setSection("/new-post");
-          //   }}
-          // >
-          //   Create a Post
-          // </Link>
-        )}
-
         {section !== "/profile" && loggedIn && (
           <Link
             to="/profile"

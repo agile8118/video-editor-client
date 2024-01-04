@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UploadingIcon from "./UploadingIcon";
+import UploadIcon from "./UploadIcon";
 const CancelToken = axios.CancelToken;
 let cancel;
 
@@ -97,7 +98,7 @@ function Uploader() {
     try {
       const { data } = await axios.post("/api/upload-video", file, {
         headers: {
-          "content-type": "video/quicktime",
+          filename: fileName,
         },
         onUploadProgress: (data) => {
           setProgress(Math.round((100 * data.loaded) / data.total));
@@ -166,12 +167,15 @@ function Uploader() {
           {isUploading ? (
             <UploadingIcon />
           ) : (
-            <img src="/download.svg" alt="download" className="box__icon" />
+            <UploadIcon />
+            // <img src="/download.svg" alt="download" className="box__icon" />
           )}
           <div className="box__input">
             <label htmlFor="file">
               {fileName ? (
                 <strong>{fileName}</strong>
+              ) : isDraggedOver ? (
+                <span>You can now drop your video!</span>
               ) : (
                 <>
                   {" "}

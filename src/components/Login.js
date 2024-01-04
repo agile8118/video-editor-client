@@ -23,8 +23,8 @@ const Login = () => {
       /** @API call */
       await axios.post("/api/login", { username, password });
       setLoggedIn(true);
-      navigate("/profile");
-      setSection("/profile");
+      navigate("/");
+      setSection("/");
       alert(t.alert.success.auth.loggedIn, "success");
     } catch (e) {
       console.log(e);

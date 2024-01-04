@@ -9,7 +9,6 @@ import {
 
 import Home from "./components/Home";
 import Login from "./components/Login";
-import NewPost from "./components/NewPost";
 import Profile from "./components/Profile";
 import Header from "./components/Header";
 
@@ -25,7 +24,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/new-post" element={<NewPost />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
