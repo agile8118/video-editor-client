@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UploadingIcon from "./UploadingIcon";
-import UploadIcon from "./UploadIcon";
 const CancelToken = axios.CancelToken;
 let cancel;
 
@@ -165,9 +164,9 @@ function Uploader() {
           />
           {isUploading && <span className="box__percentage">{progress}%</span>}
           {isUploading ? (
-            <UploadingIcon />
+            <UploadingIcon animated={true} />
           ) : (
-            <UploadIcon />
+            <UploadingIcon />
             // <img src="/download.svg" alt="download" className="box__icon" />
           )}
           <div className="box__input">

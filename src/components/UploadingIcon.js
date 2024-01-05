@@ -1,6 +1,6 @@
 import React from "react";
 
-const UploadingIcon = () => {
+const UploadingIcon = ({ animated }) => {
   return (
     <svg
       width="60px"
@@ -19,7 +19,7 @@ const UploadingIcon = () => {
         strokeLinejoin="round"
         strokeLinecap="round"
       />
-      <g id="arrow">
+      <g id={animated ? "arrow" : ""}>
         <path
           id="arrow-tri"
           d="M20.503 11.504 L15.507 6.5 10.503 11.496"
