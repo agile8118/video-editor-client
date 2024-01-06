@@ -11,8 +11,9 @@ const Videos = () => {
   const [loading, setLoading] = useState(false);
 
   const [resizeModalOpen, setResizeModalOpen] = useState(false);
-  const [resizeModalVideoId, setResizeModalVideoId] = useState("");
-  const [resizeModalVideoName, setResizeModalVideoName] = useState("");
+  // const [resizeModalVideoId, setResizeModalVideoId] = useState("");
+  // const [resizeModalVideoName, setResizeModalVideoName] = useState("");
+  const [resizeModalData, setResizeModalData] = useState({});
 
   const [extractAudioLoading, setExtractAudioLoading] = useState(false);
 
@@ -71,8 +72,13 @@ const Videos = () => {
               color="blue"
               onClick={() => {
                 setResizeModalOpen(true);
-                setResizeModalVideoId(video.videoId);
-                setResizeModalVideoName(video.name);
+                setResizeModalData({
+                  videoId: video.videoId,
+                  videoName: video.name,
+                  resizes: video.resizes,
+                });
+                // setResizeModalVideoId(video.videoId);
+                // setResizeModalVideoName(video.name);
               }}
             >
               Resize Video
@@ -119,13 +125,15 @@ const Videos = () => {
   return (
     <div className="videos">
       <ResizeModal
-        videoId={resizeModalVideoId}
-        header={`Resize ${resizeModalVideoName}`}
+        videoId={resizeModalData.videoId}
+        header={`Resize ${resizeModalData.videoName}`}
+        resizes={resizeModalData.resizes}
         text="Specify a new width and height:"
         onClose={() => {
           setResizeModalOpen(false);
-          setResizeModalVideoName("");
-          setResizeModalVideoId("");
+          setResizeModalData({});
+          // setResizeModalVideoName("");
+          // setResizeModalVideoId("");
         }}
         success={() => {}}
         open={resizeModalOpen}

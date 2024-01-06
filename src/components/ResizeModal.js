@@ -37,6 +37,60 @@ const UploadPhoto = (props) => {
     setResizeLoading(false);
   };
 
+  const renderResizes = () => {
+    const dimensionsArray = Object.keys(props.resizes);
+
+    // Separate processing and processed videos
+    const processingVideos = dimensionsArray.filter(
+      (dimensions) => props.resizes[dimensions].processing
+    );
+
+    const processedVideos = dimensionsArray.filter(
+      (dimensions) => !props.resizes[dimensions].processing
+    );
+
+    // Sort processed videos by resolution (higher resolution first)
+    processedVideos.sort((a, b) => {
+      const resolutionA = a.split("x").map(Number);
+      const resolutionB = b.split("x").map(Number);
+
+      if (resolutionA[0] !== resolutionB[0]) {
+        return resolutionB[0] - resolutionA[0];
+      } else {
+        return resolutionB[1] - resolutionA[1];
+      }
+    });
+
+    // Combine processing and sorted processed videos
+    const sortedDimensions = [...processingVideos, ...processedVideos];
+
+    return sortedDimensions.map((dimensions) => {
+      const width = dimensions.split("x")[0];
+      const height = dimensions.split("x")[1];
+      const isProcessing = props.resizes[dimensions].processing;
+
+      return (
+        <div
+          className={`resizes__item ${
+            isProcessing && "resizes__item--in-progress"
+          }`}
+          key={dimensions}
+        >
+          <div className="resizes__dimensions">
+            {width}x{height}
+          </div>
+          {isProcessing ? (
+            <div className="resizes__progress-msg">Processing</div>
+          ) : (
+            <Button color="blue" size="small">
+              Download
+            </Button>
+          )}
+        </div>
+      );
+    });
+  };
+
   return (
     <Modal
       header={props.header}
@@ -69,26 +123,15 @@ const UploadPhoto = (props) => {
       </form>
 
       <div className="resizes">
-        <h4>Your resizes:</h4>
+        <h4>Your Resizes:</h4>
 
-        <div className="resizes__item resizes__item--in-progress">
-          <div className="resizes__dimensions">2169x1960</div>
-          <div className="resizes__progress-msg">Processing</div>
-        </div>
-
-        <div className="resizes__item">
-          <div className="resizes__dimensions">1920x1080</div>
-          <Button color="blue" size="small">
-            Download
-          </Button>
-        </div>
-
-        <div className="resizes__item">
-          <div className="resizes__dimensions">1080x700</div>
-          <Button color="blue" size="small">
-            Download
-          </Button>
-        </div>
+        {props.resizes && Object.keys(props.resizes).length ? (
+          renderResizes()
+        ) : (
+          <div className="resizes__no-resize-message">
+            You haven't resized this video yet.
+          </div>
+        )}
       </div>
 
       {/* <p className="image__upload--error">{error}</p> */}
