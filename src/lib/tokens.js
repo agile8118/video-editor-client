@@ -2,7 +2,7 @@ const t = {
   /** For error messages.
    * Messages are divided into 3 different sections for both error and success messages:
    *  - auth (anything related to authentication)
-   *  - post (anything related to posts)
+   *  - video (anything related to video)
    *  - user (anything related to users)
    */
   alert: {
@@ -11,7 +11,7 @@ const t = {
       auth: {
         badLoginInfo: "Username or password is incorrect.",
       },
-      post: {},
+      video: {},
       user: {},
       default: "Sorry an unexpected error occurred. Please try again later.",
     },
@@ -21,8 +21,9 @@ const t = {
         loggedOut: "You were successfully logged out!",
         loggedIn: "You were successfully logged in!",
       },
-      post: {
-        created: "Your post was created successfully!",
+      video: {
+        audioExtracted:
+          "The audio was extracted successfully! You can now download the audio file.",
       },
       user: {
         updated: "Your info was updated successfully!",

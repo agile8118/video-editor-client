@@ -2,11 +2,18 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import InlineLoading from "../reusable/InlineLoading";
 import t from "../lib/tokens";
+import alert from "../lib/alert";
 import Button from "../reusable/Button";
+import ResizeModal from "./ResizeModal";
 
 const Videos = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [resizeModalOpen, setResizeModalOpen] = useState(false);
+  const [resizeModalVideoId, setResizeModalVideoId] = useState("");
+  const [resizeModalVideoName, setResizeModalVideoName] = useState("");
+
   const [extractAudioLoading, setExtractAudioLoading] = useState(false);
 
   const fetchVideos = async () => {
@@ -33,7 +40,13 @@ const Videos = () => {
       await axios.patch(`/api/video/extract-audio?videoId=${videoId}`, {
         videoId,
       });
-    } catch (e) {}
+      alert(t.alert.success.video.audioExtracted, "success");
+      fetchVideos();
+    } catch (e) {
+      alert(t.alert.error.default, "error");
+    }
+
+    setExtractAudioLoading(true);
   };
 
   const renderVideos = () => {
@@ -53,7 +66,15 @@ const Videos = () => {
           </div>
 
           <div className="video__actions">
-            <Button size="small" color="blue">
+            <Button
+              size="small"
+              color="blue"
+              onClick={() => {
+                setResizeModalOpen(true);
+                setResizeModalVideoId(video.videoId);
+                setResizeModalVideoName(video.name);
+              }}
+            >
               Resize Video
             </Button>
 
@@ -97,6 +118,19 @@ const Videos = () => {
     );
   return (
     <div className="videos">
+      <ResizeModal
+        videoId={resizeModalVideoId}
+        header={`Resize ${resizeModalVideoName}`}
+        text="Specify a new width and height:"
+        onClose={() => {
+          setResizeModalOpen(false);
+          setResizeModalVideoName("");
+          setResizeModalVideoId("");
+        }}
+        success={() => {}}
+        open={resizeModalOpen}
+      />
+
       <h2 className="videos__heading">Your Videos</h2>
       {videos.length === 0 ? (
         <div className="videos__no-video-message">

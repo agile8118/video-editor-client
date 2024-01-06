@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import UploadingIcon from "./UploadingIcon";
+import UploadingIcon from "../reusable/UploadingIcon";
 const CancelToken = axios.CancelToken;
 let cancel;
 
@@ -92,8 +92,6 @@ function Uploader() {
 
     setIsUploading(true);
 
-    // const formData = new FormData();
-    // formData.append("image-key", file);
     try {
       const { data } = await axios.post("/api/upload-video", file, {
         headers: {
