@@ -82,9 +82,12 @@ const UploadPhoto = (props) => {
           {isProcessing ? (
             <div className="resizes__progress-msg">Processing</div>
           ) : (
-            <Button color="blue" size="small">
+            <a
+              className="button button-blue button-small"
+              href={`/get-video-asset?videoId=${props.videoId}&type=resize&dimensions=${dimensions}`}
+            >
               Download
-            </Button>
+            </a>
           )}
         </div>
       );
