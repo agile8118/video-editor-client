@@ -28,7 +28,13 @@ const UploadPhoto = (props) => {
       Number(width) > video.dimensions.width ||
       Number(height) > video.dimensions.height
     ) {
-      alert(t.alert.error.video.resize, "error");
+      alert(t.alert.error.video.resize.range, "error");
+      return;
+    }
+
+    // Check if numbers are even
+    if (Number(width) % 2 !== 0 || Number(height) % 2 !== 0) {
+      alert(t.alert.error.video.resize.even, "error");
       return;
     }
 

@@ -22,7 +22,7 @@ const Videos = () => {
   }, []);
 
   const extractAudio = async (videoId) => {
-    setExtractAudioLoading(true);
+    setExtractAudioLoading(videoId);
 
     try {
       /** @API call */
@@ -35,7 +35,7 @@ const Videos = () => {
       alert(t.alert.error.default, "error");
     }
 
-    setExtractAudioLoading(true);
+    setExtractAudioLoading(false);
   };
 
   const renderVideos = () => {
@@ -79,7 +79,7 @@ const Videos = () => {
               <Button
                 size="small"
                 color="blue"
-                loading={extractAudioLoading}
+                loading={extractAudioLoading === video.videoId}
                 onClick={() => {
                   extractAudio(video.videoId);
                 }}

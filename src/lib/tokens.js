@@ -12,8 +12,11 @@ const t = {
         badLoginInfo: "Username or password is incorrect.",
       },
       video: {
-        resize:
-          "Width and height should be greater than 0 and less than the original width and height.",
+        resize: {
+          range:
+            "Width and height should be greater than 0 and less than the original width and height.",
+          even: "Width and height should be even numbers.",
+        },
       },
       user: {},
       default: "Sorry an unexpected error occurred. Please try again later.",
