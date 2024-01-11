@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UploadingIcon from "../reusable/UploadingIcon";
+import useVideo from "../hooks/useVideo";
+
 const CancelToken = axios.CancelToken;
 let cancel;
 
 function Uploader() {
+  const { fetchVideos } = useVideo();
+
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [fileName, setFileName] = useState("");
   const [file, setFile] = useState(null);
@@ -108,6 +112,7 @@ function Uploader() {
       if (data.status === "success") {
         cancelUploading();
         showMessage("File was uploaded successfully!", "success");
+        fetchVideos();
       }
     } catch (e) {
       if (e.response && e.response.data.message)

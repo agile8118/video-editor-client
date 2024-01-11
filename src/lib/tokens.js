@@ -11,7 +11,10 @@ const t = {
       auth: {
         badLoginInfo: "Username or password is incorrect.",
       },
-      video: {},
+      video: {
+        resize:
+          "Width and height should be greater than 0 and less than the original width and height.",
+      },
       user: {},
       default: "Sorry an unexpected error occurred. Please try again later.",
     },
@@ -24,6 +27,8 @@ const t = {
       video: {
         audioExtracted:
           "The audio was extracted successfully! You can now download the audio file.",
+        resized:
+          "The resize process has successfully started! This process could take up to a few hours. Please check back later.",
       },
       user: {
         updated: "Your info was updated successfully!",

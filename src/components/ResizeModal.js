@@ -5,20 +5,32 @@ import Input from "../reusable/Input";
 import Button from "../reusable/Button";
 import alert from "../lib/alert";
 import t from "../lib/tokens";
+import useVideo from "../hooks/useVideo";
 
 const UploadPhoto = (props) => {
-  const [loading, setLoading] = useState(false); // overall modal loading
+  // const [loading, setLoading] = useState(false); // overall modal loading
   const [resizeLoading, setResizeLoading] = useState(false); // resize button loading
-  const [error, setError] = useState("");
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
-  const reset = () => {
-    setStatus("clean");
-  };
+  const { resizes, setResizes, dimensions, name } = useVideo(props.videoId);
 
   const onFormSubmit = async (e) => {
     e.preventDefault();
+
+    // Check that width and height are numbers, greater than zero, and less than the
+    // dimensions of the original video.
+    if (
+      !Number(width) ||
+      !Number(height) ||
+      Number(width) <= 0 ||
+      Number(height) <= 0 ||
+      Number(width) > dimensions.width ||
+      Number(height) > dimensions.height
+    ) {
+      alert(t.alert.error.video.resize, "error");
+      return;
+    }
 
     setResizeLoading(true);
 
@@ -29,8 +41,17 @@ const UploadPhoto = (props) => {
         width,
         height,
       });
+
+      setWidth("");
+      setHeight("");
+      alert(t.alert.success.video.resized, "success");
+      setResizes({
+        ...resizes,
+        [`${width}x${height}`]: {
+          processing: true,
+        },
+      });
     } catch (e) {
-      console.log(e);
       alert(t.alert.error.default, "error");
     }
 
@@ -38,15 +59,15 @@ const UploadPhoto = (props) => {
   };
 
   const renderResizes = () => {
-    const dimensionsArray = Object.keys(props.resizes);
+    const dimensionsArray = Object.keys(resizes);
 
     // Separate processing and processed videos
     const processingVideos = dimensionsArray.filter(
-      (dimensions) => props.resizes[dimensions].processing
+      (dimensions) => resizes[dimensions].processing
     );
 
     const processedVideos = dimensionsArray.filter(
-      (dimensions) => !props.resizes[dimensions].processing
+      (dimensions) => !resizes[dimensions].processing
     );
 
     // Sort processed videos by resolution (higher resolution first)
@@ -67,7 +88,8 @@ const UploadPhoto = (props) => {
     return sortedDimensions.map((dimensions) => {
       const width = dimensions.split("x")[0];
       const height = dimensions.split("x")[1];
-      const isProcessing = props.resizes[dimensions].processing;
+
+      const isProcessing = resizes[dimensions].processing;
 
       return (
         <div
@@ -96,11 +118,12 @@ const UploadPhoto = (props) => {
 
   return (
     <Modal
-      header={props.header}
+      header={`Resize ${name}`}
       open={props.open}
       onClose={() => {
         props.onClose();
-        setError("");
+        setWidth("");
+        setHeight("");
       }}
     >
       <p className="">{props.text}</p>
@@ -108,6 +131,7 @@ const UploadPhoto = (props) => {
         <Input
           label="width"
           value={width}
+          required={true}
           onChange={(value) => {
             setWidth(value);
           }}
@@ -116,6 +140,7 @@ const UploadPhoto = (props) => {
         <Input
           label="height"
           value={height}
+          required={true}
           onChange={(value) => {
             setHeight(value);
           }}
@@ -127,8 +152,7 @@ const UploadPhoto = (props) => {
 
       <div className="resizes">
         <h4>Your Resizes:</h4>
-
-        {props.resizes && Object.keys(props.resizes).length ? (
+        {resizes && Object.keys(resizes).length ? (
           renderResizes()
         ) : (
           <div className="resizes__no-resize-message">

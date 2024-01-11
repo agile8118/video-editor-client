@@ -16,9 +16,12 @@ export const AppContext = createContext(null);
 function App() {
   const [loggedIn, setLoggedIn] = useState(null);
   const [section, setSection] = useState("/"); // Possible values: ["/", "/profile", "/login", "/new-post"];
+  const [videos, setVideos] = useState([]);
 
   return (
-    <AppContext.Provider value={{ loggedIn, setLoggedIn, section, setSection }}>
+    <AppContext.Provider
+      value={{ loggedIn, setLoggedIn, section, setSection, videos, setVideos }}
+    >
       <Router>
         <Header />
         <Routes>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import InlineLoading from "../reusable/InlineLoading";
 import t from "../lib/tokens";
@@ -6,28 +6,16 @@ import alert from "../lib/alert";
 import Button from "../reusable/Button";
 import ResizeModal from "./ResizeModal";
 
+import useVideo from "../hooks/useVideo";
+
 const Videos = () => {
-  const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
+  const { videos, loading, fetchVideos } = useVideo();
 
   const [resizeModalOpen, setResizeModalOpen] = useState(false);
-  // const [resizeModalVideoId, setResizeModalVideoId] = useState("");
-  // const [resizeModalVideoName, setResizeModalVideoName] = useState("");
   const [resizeModalData, setResizeModalData] = useState({});
 
   const [extractAudioLoading, setExtractAudioLoading] = useState(false);
-
-  const fetchVideos = async () => {
-    setLoading(true);
-    try {
-      /** @API call */
-      const { data } = await axios.get("/api/videos");
-      setVideos(data);
-    } catch (e) {
-      alert(t.alert.error.default, "error");
-    }
-    setLoading(false);
-  };
 
   useEffect(() => {
     fetchVideos();
@@ -74,11 +62,7 @@ const Videos = () => {
                 setResizeModalOpen(true);
                 setResizeModalData({
                   videoId: video.videoId,
-                  videoName: video.name,
-                  resizes: video.resizes,
                 });
-                // setResizeModalVideoId(video.videoId);
-                // setResizeModalVideoName(video.name);
               }}
             >
               Resize Video
@@ -126,14 +110,10 @@ const Videos = () => {
     <div className="videos">
       <ResizeModal
         videoId={resizeModalData.videoId}
-        header={`Resize ${resizeModalData.videoName}`}
-        resizes={resizeModalData.resizes}
         text="Specify a new width and height:"
         onClose={() => {
           setResizeModalOpen(false);
           setResizeModalData({});
-          // setResizeModalVideoName("");
-          // setResizeModalVideoId("");
         }}
         success={() => {}}
         open={resizeModalOpen}
