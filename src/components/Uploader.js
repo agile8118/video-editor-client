@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UploadingIcon from "../reusable/UploadingIcon";
 import useVideo from "../hooks/useVideo";
+import Button from "../reusable/Button";
 
 const CancelToken = axios.CancelToken;
 let cancel;
@@ -14,6 +15,7 @@ function Uploader() {
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -78,6 +80,7 @@ function Uploader() {
 
   const cancelUploading = () => {
     setIsUploading(false);
+    setProcessing(false);
     setFileName("");
     setProgress(0);
     setFile(null);
@@ -102,7 +105,9 @@ function Uploader() {
           filename: fileName,
         },
         onUploadProgress: (data) => {
-          setProgress(Math.round((100 * data.loaded) / data.total));
+          const progressNumber = Math.round((100 * data.loaded) / data.total);
+          setProgress(progressNumber);
+          if (progressNumber === 100) setProcessing(true);
         },
         cancelToken: new CancelToken(function executor(c) {
           cancel = c;
@@ -115,8 +120,9 @@ function Uploader() {
         fetchVideos();
       }
     } catch (e) {
-      if (e.response && e.response.data.message)
-        showMessage(e.response.data.message, "error");
+      // console.log(e.response.data);
+      if (e.response && e.response.data.error)
+        showMessage(e.response.data.error, "error");
       cancelUploading();
     }
   };
@@ -144,7 +150,7 @@ function Uploader() {
         fileName ? "box--file-selected" : ""
       } ${isUploading ? "box--file-uploading" : ""} ${
         successMsg ? "box--success" : ""
-      } ${errorMsg ? "box--error" : ""}`}
+      } ${errorMsg ? "box--error" : ""} ${processing ? "box--processing" : ""}`}
       onDrag={handleDragStart}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
@@ -153,11 +159,12 @@ function Uploader() {
       onDragEnd={handleDragLeave}
       onDrop={handleDrop}
     >
-      {!!successMsg || !!errorMsg ? (
-        <div className="box__message">{successMsg || errorMsg}</div>
+      {!!successMsg || !!errorMsg || processing ? (
+        <div className="box__message">
+          {successMsg || errorMsg || "Processing your video file."}
+        </div>
       ) : (
         <>
-          {" "}
           <input
             className="box__file"
             type="file"
@@ -165,45 +172,47 @@ function Uploader() {
             id="file"
             onChange={onInputFileChange}
           />
+          {isUploading ? <UploadingIcon animated={true} /> : <UploadingIcon />}
           {isUploading && <span className="box__percentage">{progress}%</span>}
-          {isUploading ? (
-            <UploadingIcon animated={true} />
-          ) : (
-            <UploadingIcon />
-            // <img src="/download.svg" alt="download" className="box__icon" />
-          )}
-          <div className="box__input">
-            <label htmlFor="file">
-              {fileName ? (
-                <strong>{fileName}</strong>
-              ) : isDraggedOver ? (
-                <span>You can now drop your video!</span>
-              ) : (
-                <>
-                  {" "}
-                  <strong>Choose a video file</strong>
-                  <span className="box__dragndrop">
-                    {" "}
-                    or drag and drop it here
-                  </span>
-                  .
-                </>
-              )}
-            </label>
+          <div className="box__file-selected-msg">
+            {!isUploading && (
+              <div className="box__input">
+                <label htmlFor="file">
+                  {fileName ? (
+                    <strong>{fileName}</strong>
+                  ) : isDraggedOver ? (
+                    <span>You can now drop your video!</span>
+                  ) : (
+                    <>
+                      <strong>Choose a video file</strong>
+                      <span className="box__dragndrop">
+                        {" "}
+                        or drag and drop it here
+                      </span>
+                      .
+                    </>
+                  )}
+                </label>
+              </div>
+            )}
+            {fileName && !isUploading && (
+              <Button color="blue" type="submit" size="small">
+                Upload
+              </Button>
+            )}
           </div>
-          {fileName && !isUploading && (
-            <button className="button button-blue" type="submit">
-              Upload
-            </button>
-          )}
           {isUploading && (
-            <button
-              className="button button-red"
-              type="submit"
-              onClick={cancelUploading}
-            >
-              Cancel uploading
-            </button>
+            <div className="box__is-uploading-msg">
+              Uploading <strong> {fileName}</strong>
+              <Button
+                color="red"
+                size="small"
+                type="submit"
+                onClick={cancelUploading}
+              >
+                Cancel
+              </Button>
+            </div>
           )}
           <div className="box-loading" style={{ width: progress + "%" }}></div>
         </>
