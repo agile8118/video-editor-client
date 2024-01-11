@@ -13,7 +13,7 @@ const UploadPhoto = (props) => {
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
-  const { resizes, setResizes, dimensions, name } = useVideo(props.videoId);
+  const { video, addResize } = useVideo(props.videoId);
 
   const onFormSubmit = async (e) => {
     e.preventDefault();
@@ -25,8 +25,8 @@ const UploadPhoto = (props) => {
       !Number(height) ||
       Number(width) <= 0 ||
       Number(height) <= 0 ||
-      Number(width) > dimensions.width ||
-      Number(height) > dimensions.height
+      Number(width) > video.dimensions.width ||
+      Number(height) > video.dimensions.height
     ) {
       alert(t.alert.error.video.resize, "error");
       return;
@@ -45,12 +45,7 @@ const UploadPhoto = (props) => {
       setWidth("");
       setHeight("");
       alert(t.alert.success.video.resized, "success");
-      setResizes({
-        ...resizes,
-        [`${width}x${height}`]: {
-          processing: true,
-        },
-      });
+      addResize(width, height);
     } catch (e) {
       alert(t.alert.error.default, "error");
     }
@@ -59,15 +54,15 @@ const UploadPhoto = (props) => {
   };
 
   const renderResizes = () => {
-    const dimensionsArray = Object.keys(resizes);
+    const dimensionsArray = Object.keys(video.resizes);
 
     // Separate processing and processed videos
     const processingVideos = dimensionsArray.filter(
-      (dimensions) => resizes[dimensions].processing
+      (dimensions) => video.resizes[dimensions].processing
     );
 
     const processedVideos = dimensionsArray.filter(
-      (dimensions) => !resizes[dimensions].processing
+      (dimensions) => !video.resizes[dimensions].processing
     );
 
     // Sort processed videos by resolution (higher resolution first)
@@ -89,7 +84,7 @@ const UploadPhoto = (props) => {
       const width = dimensions.split("x")[0];
       const height = dimensions.split("x")[1];
 
-      const isProcessing = resizes[dimensions].processing;
+      const isProcessing = video.resizes[dimensions].processing;
 
       return (
         <div
@@ -118,7 +113,7 @@ const UploadPhoto = (props) => {
 
   return (
     <Modal
-      header={`Resize ${name}`}
+      header={`Resize ${video.name}`}
       open={props.open}
       onClose={() => {
         props.onClose();
@@ -152,7 +147,7 @@ const UploadPhoto = (props) => {
 
       <div className="resizes">
         <h4>Your Resizes:</h4>
-        {resizes && Object.keys(resizes).length ? (
+        {video.resizes && Object.keys(video.resizes).length ? (
           renderResizes()
         ) : (
           <div className="resizes__no-resize-message">

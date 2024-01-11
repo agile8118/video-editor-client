@@ -6,12 +6,9 @@ import axios from "axios";
 import alert from "../lib/alert";
 
 const useVideo = (videoId) => {
+  const { videos, setVideos } = useContext(AppContext); // the complete list of videos
   const [loading, setLoading] = useState(true); // loading for fetching the videos
-
-  const { videos, setVideos } = useContext(AppContext);
-  const [resizes, setResizes] = useState({});
-  const [name, setName] = useState("");
-  const [dimensions, setDimensions] = useState({});
+  const [video, setVideo] = useState({}); // selected video for the modal
 
   const fetchVideos = async () => {
     setLoading(true);
@@ -27,34 +24,38 @@ const useVideo = (videoId) => {
 
   useEffect(() => {
     if (videoId) {
-      const resizesObj = videos.find(
-        (video) => video.videoId === videoId
-      ).resizes;
-      setResizes(resizesObj);
+      const selectedVideo = videos.find((video) => video.videoId === videoId);
+      setVideo(selectedVideo);
     } else {
-      setResizes({});
+      setVideo({});
     }
-  }, [videoId]);
+  }, [videoId, videos]);
 
-  useEffect(() => {
-    if (videoId) {
-      const video = videos.find((video) => video.videoId === videoId);
-      setDimensions(video.dimensions);
-      setName(video.name);
-    } else {
-      setDimensions({});
-      setName("");
-    }
-  }, [videoId]);
+  const addResize = (width, height) => {
+    // Find the video in videos and add the resize to it, with processing set to true
+    const updatedVideos = videos.map((video) => {
+      if (video.videoId === videoId) {
+        return {
+          ...video,
+          resizes: {
+            ...video.resizes,
+            [`${width}x${height}`]: {
+              processing: true,
+            },
+          },
+        };
+      }
+      return video;
+    });
+    setVideos(updatedVideos);
+  };
 
   return {
     videos,
     loading,
     fetchVideos,
-    resizes,
-    setResizes,
-    dimensions,
-    name,
+    video,
+    addResize,
   };
 };
 
