@@ -10,7 +10,7 @@ import useVideo from "../hooks/useVideo";
 
 const Videos = () => {
   // const [loading, setLoading] = useState(false);
-  const { videos, loading, fetchVideos } = useVideo();
+  const { videos, loading, fetchVideos, extractedAudioTrue } = useVideo();
 
   const [resizeModalOpen, setResizeModalOpen] = useState(false);
   const [resizeModalData, setResizeModalData] = useState({});
@@ -30,7 +30,7 @@ const Videos = () => {
         videoId,
       });
       alert(t.alert.success.video.audioExtracted, "success");
-      fetchVideos();
+      extractedAudioTrue(videoId);
     } catch (e) {
       alert(t.alert.error.default, "error");
     }
@@ -42,6 +42,7 @@ const Videos = () => {
     return videos.map((video) => {
       return (
         <div className="video" key={video.id}>
+          {/** @API call */}
           <img
             className="video__thumbnail"
             src={`/get-video-asset?videoId=${video.videoId}&type=thumbnail`}
@@ -69,6 +70,7 @@ const Videos = () => {
             </Button>
 
             {video.extractedAudio ? (
+              /** @API call */
               <a
                 className="button button-small button-blue"
                 href={`/get-video-asset?videoId=${video.videoId}&type=audio`}
@@ -88,6 +90,7 @@ const Videos = () => {
               </Button>
             )}
 
+            {/** @API call */}
             <a
               className="button button-small button-blue"
               href={`/get-video-asset?videoId=${video.videoId}&type=original`}

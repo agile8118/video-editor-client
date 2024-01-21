@@ -11,20 +11,6 @@ const Home = () => {
   const { loggedIn, setLoggedIn, section, setSection } = useContext(AppContext);
   const navigate = useNavigate();
 
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  // const fetchPosts = async () => {
-  //   setLoading(true);
-  //   try {
-  //     /** @API call */
-  //     const { data } = await axios.get("/api/posts");
-  //     setPosts(data);
-  //   } catch (e) {
-  //     alert(t.alert.error.default, "error");
-  //   }
-  //   setLoading(false);
-  // };
 
   useEffect(() => {
     if (loggedIn === false) {
@@ -32,12 +18,7 @@ const Home = () => {
     }
   }, [loggedIn]);
 
-  if (loading)
-    return (
-      <div className="u-text-center u-margin-top-3">
-        <InlineLoading color="gray" />
-      </div>
-    );
+
   return (
     <div className="posts-container">
       <Uploader />

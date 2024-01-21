@@ -20,34 +20,6 @@ function Uploader() {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  //   useEffect(() => {
-  //     let interval;
-  //     if (isUploading) {
-  //       let p = 0;
-  //       interval = setInterval(() => {
-  //         p += 1;
-
-  //         if (p < 100) {
-  //           setProgress(p);
-  //         } else {
-  //           setProgress(100);
-  //           clearInterval(interval);
-  //         }
-  //       }, 300);
-  //     }
-
-  //     if (!isUploading) {
-  //       setProgress(0);
-
-  //       console.log("about to clear...");
-  //       clearInterval(interval);
-  //     }
-
-  //     return () => {
-  //       clearInterval(interval);
-  //     };
-  //   }, [isUploading]);
-
   const handleDragStart = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -100,6 +72,7 @@ function Uploader() {
     setIsUploading(true);
 
     try {
+      /** @API call */
       const { data } = await axios.post("/api/upload-video", file, {
         headers: {
           filename: fileName,

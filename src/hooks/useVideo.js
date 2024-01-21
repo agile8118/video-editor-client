@@ -50,12 +50,26 @@ const useVideo = (videoId) => {
     setVideos(updatedVideos);
   };
 
+  const extractedAudioTrue = (videoId) => {
+    const updatedVideos = videos.map((video) => {
+      if (video.videoId === videoId) {
+        return {
+          ...video,
+          extractedAudio: true,
+        };
+      }
+      return video;
+    });
+    setVideos(updatedVideos);
+  };
+
   return {
     videos,
     loading,
     fetchVideos,
     video,
     addResize,
+    extractedAudioTrue,
   };
 };
 

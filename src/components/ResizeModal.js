@@ -105,6 +105,7 @@ const UploadPhoto = (props) => {
           {isProcessing ? (
             <div className="resizes__progress-msg">Processing</div>
           ) : (
+            /** @API call */
             <a
               className="button button-blue button-small"
               href={`/get-video-asset?videoId=${props.videoId}&type=resize&dimensions=${dimensions}`}
